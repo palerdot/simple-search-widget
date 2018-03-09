@@ -67,6 +67,8 @@ class SearchWidget extends Component {
       this.setState({
         highlighted: _.head(this.state.results).id
       })
+      // lose the mouse focus by focussing on the text element
+      document.getElementById('search-query-input').focus()
 
     } else if (e.key === "ArrowDown") {
       // we need to move down
