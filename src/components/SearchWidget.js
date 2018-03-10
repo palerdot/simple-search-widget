@@ -41,6 +41,9 @@ class SearchWidget extends Component {
       return
     }
 
+    // lose the mouse focus by focussing on the text element
+    document.getElementById('search-query-input').focus()
+
     // handle key up
     if (e.key === "ArrowUp") {
       // we have results and we need to move up
@@ -62,14 +65,6 @@ class SearchWidget extends Component {
         return
       }
 
-      // special case: if nothing is highlighted already
-      // highlight the first one
-      this.setState({
-        highlighted: _.head(this.state.results).id
-      })
-      // lose the mouse focus by focussing on the text element
-      document.getElementById('search-query-input').focus()
-
     } else if (e.key === "ArrowDown") {
       // we need to move down
       let current_index = _.findIndex(this.state.results, (res) => res.id === this.state.highlighted)
@@ -90,15 +85,13 @@ class SearchWidget extends Component {
         return
       }
 
-      // special case: if nothing is highlighted already
-      // highlight the first one
-      this.setState({
-        highlighted: _.head(this.state.results).id
-      })
-      // lose the mouse focus by focussing on the text element
-      document.getElementById('search-query-input').focus()
-
     }
+
+    // special case: if nothing is highlighted already
+    // highlight the first one
+    this.setState({
+      highlighted: _.head(this.state.results).id
+    })
 
   }
   // END: helper functions to handle key up/down
