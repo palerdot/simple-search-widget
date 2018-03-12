@@ -17,14 +17,24 @@ class SearchWidget extends Component {
     this.state = {
       query: "",
       results: [],
-      highlighted: false
+      highlighted: false,
+      disable_mouse_events: false
     }
   }
 
   // START: lifecycle methods
   componentWillMount() {
     // attach event listeners to document to look for KEY UP/DOWN
-    document.addEventListener("keydown", (e) => this._handleKeyPress(e))
+    document.addEventListener("keydown", _.throttle((e) => {
+      // before handling keyboard disable mouse events
+      this._handleKeyPress(e)
+    }, 100))
+    document.addEventListener("mousemove", _.throttle((e) => {
+      // enable mouse events
+      this.setState({
+        disable_mouse_events: false
+      })
+    }, 200))
   }
 
   componentWillUnmount() {
@@ -35,6 +45,7 @@ class SearchWidget extends Component {
 
   // START: helper functions to handle key up/down
   _handleKeyPress(e) {
+
     // if no results nothing to do anyway
     if (_.isEmpty(this.state.results)) {
       // do not proceed
@@ -46,54 +57,73 @@ class SearchWidget extends Component {
 
     // handle key up
     if (e.key === "ArrowUp") {
-      // we have results and we need to move up
-      let current_index = _.findIndex(this.state.results, (res) => res.id === this.state.highlighted)
-      if (current_index > -1) {
-        // we have an item; move up should reduce the index
-        // if already first item; do not do anything
-        if (current_index === 0) {
-          // do not proceed
-          return
-        }
-        // we have to move up to the new item
-        let new_item = _.nth(this.state.results, current_index - 1)
-        // update the highlighted to new item
-        this.setState({
-          highlighted: new_item.id
-        })
-        // all done
-        return
-      }
-
+      this.setState({
+        disable_mouse_events: true
+      })
+      this._handleUpNavigation()
+      // enabling will be done when mouse move happens
     } else if (e.key === "ArrowDown") {
-      // we need to move down
-      let current_index = _.findIndex(this.state.results, (res) => res.id === this.state.highlighted)
-      if (current_index > -1) {
-        // we have an item; move down should increase the index
-        // if last item do not do anything
-        if (current_index === _.size(this.state.results) - 1) {
-          // do not proceed
-          return
-        }
-        // we have to move down to the new item
-        let new_item = _.nth(this.state.results, current_index + 1)
-        // update the highlighted to new item
-        this.setState({
-          highlighted: new_item.id
-        })
-        // all done
-        return
-      }
-
+      this.setState({
+        disable_mouse_events: true
+      })
+      this._handleDownNavigation()
+      // enabling will be done when mouse move happens
     }
 
-    // special case: if nothing is highlighted already
-    // highlight the first one
-    this.setState({
-      highlighted: _.head(this.state.results).id
-    })
-
   }
+
+  _handleUpNavigation() {
+    console.log('porumai! ArrowUp')
+    // we have results and we need to move up
+    let current_index = _.findIndex(this.state.results, (res) => res.id === this.state.highlighted)
+    if (current_index > -1) {
+      // we have an item; move up should reduce the index
+      // if already first item; do not do anything
+      if (current_index === 0) {
+        // do not proceed
+        return
+      }
+      // we have to move up to the new item
+      let new_item = _.nth(this.state.results, current_index - 1)
+      // update the highlighted to new item
+      this.setState({
+        highlighted: new_item.id
+      })
+    } else {
+      // special case: if nothing is highlighted already
+      // highlight the first one
+      this.setState({
+        highlighted: _.head(this.state.results).id
+      })
+    }
+  }
+
+  _handleDownNavigation() {
+    console.log('porumai! ArrowDown')
+    // we need to move down
+    let current_index = _.findIndex(this.state.results, (res) => res.id === this.state.highlighted)
+    if (current_index > -1) {
+      // we have an item; move down should increase the index
+      // if last item do not do anything
+      if (current_index === _.size(this.state.results) - 1) {
+        // do not proceed
+        return
+      }
+      // we have to move down to the new item
+      let new_item = _.nth(this.state.results, current_index + 1)
+      // update the highlighted to new item
+      this.setState({
+        highlighted: new_item.id
+      })
+    } else {
+      // special case: if nothing is highlighted already
+      // highlight the first one
+      this.setState({
+        highlighted: _.head(this.state.results).id
+      })
+    }
+  }
+
   // END: helper functions to handle key up/down
 
   performSearch(query) {
@@ -176,6 +206,7 @@ class SearchWidget extends Component {
           results={this.state.results}
           highlighted={this.state.highlighted}
           highlightHandler={(id) => this.highlightSelection(id)}
+          disable_mouse_events={this.state.disable_mouse_events}
         />
 
       </div>
