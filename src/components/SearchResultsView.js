@@ -19,6 +19,7 @@ const SearchResultsView = function (props) {
                 highlighted={props.highlighted}
                 disable_mouse_events={props.disable_mouse_events}
                 highlightHandler={(id) => props.highlightHandler(id)}
+                disableMouseEventHandler={(value) => props.disableMouseEventHandler(value)}
               />
             )}
           </div>

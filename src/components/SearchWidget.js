@@ -43,6 +43,13 @@ class SearchWidget extends Component {
   }
   // END: lifecycle methods
 
+  // helper function to enable/disable mouse events from inside components
+  disableMouseEventHandler(value) {
+    this.setState({
+      disable_mouse_events: value
+    })
+  }
+
   // START: helper functions to handle key up/down
   _handleKeyPress(e) {
 
@@ -207,6 +214,7 @@ class SearchWidget extends Component {
           highlighted={this.state.highlighted}
           highlightHandler={(id) => this.highlightSelection(id)}
           disable_mouse_events={this.state.disable_mouse_events}
+          disableMouseEventHandler={(value) => this.disableMouseEventHandler(value)}
         />
 
       </div>

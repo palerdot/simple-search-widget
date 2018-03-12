@@ -106,6 +106,7 @@
 
 .card.highlighted {
   background-color: lightyellow;
+  pointer-events: none;
 }
 
 .card div {
