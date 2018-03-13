@@ -170,6 +170,14 @@ class SearchWidget extends Component {
       results: results,
       highlighted: false
     })
+
+    // scroll to top with new results
+    let container = document.getElementById('card-holder')
+    if (container) {
+      // scroll to top
+      container.scrollTop = 0
+    }
+    
   }
 
   // clear search query
