@@ -30,6 +30,12 @@ class SearchWidget extends Component {
       this._handleKeyPress(e)
     }, 100))
     document.addEventListener("mousemove", _.throttle((e) => {
+      // console.log('PORUMAI MOUSE MOVE ')
+      // check if mouse events are already disabled
+      if (!this.state.disable_mouse_events) {
+        // do not set 
+        return
+      }
       // enable mouse events
       this.setState({
         disable_mouse_events: false
@@ -45,6 +51,7 @@ class SearchWidget extends Component {
 
   // helper function to enable/disable mouse events from inside components
   disableMouseEventHandler(value) {
+    console.log('PORUMAI! MOUSE MOVE DISABLED ? ', value)
     this.setState({
       disable_mouse_events: value
     })
