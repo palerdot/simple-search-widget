@@ -30,28 +30,34 @@ class SearchWidget extends Component {
       this._handleKeyPress(e)
     }, 100))
     document.addEventListener("mousemove", _.throttle((e) => {
-      // console.log('PORUMAI MOUSE MOVE ')
-      // check if mouse events are already disabled
-      if (!this.state.disable_mouse_events) {
-        // do not set 
-        return
-      }
-      // enable mouse events
-      this.setState({
-        disable_mouse_events: false
-      })
+      this._handleMouseMove(e)
     }, 200))
   }
 
   componentWillUnmount() {
     // remove event listeners
     document.removeEventListener("keydown", (e) => this._handleKeyPress(e))
+    document.removeEventListener("mousemove", (e) => this._handleMouseMove(e))
   }
   // END: lifecycle methods
 
+  // helper function to throttle mousemove 
+  // on mousemove we will be enabling/restoring mouse events
+  _handleMouseMove(e) {
+    // check if mouse events are already disabled
+    if (!this.state.disable_mouse_events) {
+      // do not set 
+      return
+    }
+    // enable mouse events
+    this.setState({
+      disable_mouse_events: false
+    })
+  }
+
   // helper function to enable/disable mouse events from inside components
+  // NOTE: if DISABLED; they are ENABLED back on 'MOUSEMOVE'
   disableMouseEventHandler(value) {
-    console.log('PORUMAI! MOUSE MOVE DISABLED ? ', value)
     this.setState({
       disable_mouse_events: value
     })
@@ -71,6 +77,8 @@ class SearchWidget extends Component {
 
     // handle key up
     if (e.key === "ArrowUp") {
+      // prevent the cursor focus from going to start of the text
+      e.preventDefault()
       this.setState({
         disable_mouse_events: true
       })
@@ -87,7 +95,6 @@ class SearchWidget extends Component {
   }
 
   _handleUpNavigation() {
-    console.log('porumai! ArrowUp')
     // we have results and we need to move up
     let current_index = _.findIndex(this.state.results, (res) => res.id === this.state.highlighted)
     if (current_index > -1) {
@@ -113,7 +120,6 @@ class SearchWidget extends Component {
   }
 
   _handleDownNavigation() {
-    console.log('porumai! ArrowDown')
     // we need to move down
     let current_index = _.findIndex(this.state.results, (res) => res.id === this.state.highlighted)
     if (current_index > -1) {
