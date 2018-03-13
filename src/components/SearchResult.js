@@ -47,13 +47,15 @@ class SearchResult extends PureComponent {
 
       let container = document.getElementById('card-holder')
       let elem = ReactDOM.findDOMNode(this)
-      let scrollTo = elem.offsetTop - container.offsetTop - elem.offsetHeight
+      let is_inside_view = this._checkInView(container, elem, false)
       // scroll only if element is not in view
-      if (!this._checkInView(container, elem, false)) {
+      if (!is_inside_view) {
         // disable mouse events (will be enabled back on mousemove)
         this.props.disableMouseEventHandler(true)
         // perform the scroll
-        container.scrollTop = scrollTo
+        // let scrollTo = elem.offsetTop - container.offsetTop - elem.offsetHeight
+        // container.scrollTop = scrollTo
+        elem.scrollIntoView({block: 'nearest'})
       }
 
     }
